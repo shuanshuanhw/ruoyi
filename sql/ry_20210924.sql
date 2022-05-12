@@ -23,6 +23,7 @@ create table sys_dept (
 -- ----------------------------
 -- 初始化-部门表数据
 -- ----------------------------
+#                              父部门id 祖级列表       部门名称      顺序 负责人    联系电话        邮箱        状态  删除标志
 insert into sys_dept values(100,  0,   '0',          '顺德图书馆',   0, '舒翔', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(101,  100, '0,100',      '流通分管', 1, '卢应斌', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(102,  100, '0,100',      '采编分管', 2, '蔺梦华', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
@@ -71,6 +72,7 @@ create table sys_user (
 -- ----------------------------
 -- 初始化-用户信息表数据
 -- ----------------------------
+#                             部门ID 登录账号 用户昵称 用户类型   邮箱          手机号码    用户性别 头像路径           密码                     盐加密  帐号状态 删除标志 最后登录IP 最后登录时间 密码最后更新时间                               备注
 insert into sys_user values(1,  103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '管理员');
 insert into sys_user values(2,  105, 'ry',    '若依', '00', 'ry@qq.com',  '15666666666', '1', '', '8e6d98b90472783cc73c17047ddccf36', '222222', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '测试员');
 
@@ -160,7 +162,7 @@ create table sys_menu (
 -- 初始化-菜单信息表数据
 -- ----------------------------
 -- 一级菜单
-#                                 菜单名称 父菜单ID 顺序 请求地址
+#                                 菜单名称 父菜单ID 顺序 请求地址          打开方式     菜单类型 状态 是否刷新 权限标识 菜单图标
 insert into sys_menu values('1', '系统管理', '0', '1', '#',                '',          'M', '0', '1', '', 'fa fa-gear',           'admin', sysdate(), '', null, '系统管理目录');
 insert into sys_menu values('2', '系统监控', '0', '2', '#',                '',          'M', '0', '1', '', 'fa fa-video-camera',   'admin', sysdate(), '', null, '系统监控目录');
 insert into sys_menu values('3', '系统工具', '0', '3', '#',                '',          'M', '0', '1', '', 'fa fa-bars',           'admin', sysdate(), '', null, '系统工具目录');
@@ -276,6 +278,7 @@ create table sys_user_role (
 -- ----------------------------
 -- 初始化-用户和角色关联表数据
 -- ----------------------------
+#                               用户ID 角色ID
 insert into sys_user_role values ('1', '1');
 insert into sys_user_role values ('2', '2');
 
@@ -293,6 +296,7 @@ create table sys_role_menu (
 -- ----------------------------
 -- 初始化-角色和菜单关联表数据
 -- ----------------------------
+#                               角色ID 菜单ID
 insert into sys_role_menu values ('2', '1');
 insert into sys_role_menu values ('2', '2');
 insert into sys_role_menu values ('2', '3');
@@ -392,6 +396,7 @@ create table sys_role_dept (
 -- ----------------------------
 -- 初始化-角色和部门关联表数据
 -- ----------------------------
+#                               角色ID  部门ID
 insert into sys_role_dept values ('2', '100');
 insert into sys_role_dept values ('2', '101');
 insert into sys_role_dept values ('2', '105');
@@ -410,6 +415,7 @@ create table sys_user_post
 -- ----------------------------
 -- 初始化-用户与岗位关联表数据
 -- ----------------------------
+#                               用户ID 岗位ID
 insert into sys_user_post values ('1', '1');
 insert into sys_user_post values ('2', '2');
 
@@ -457,7 +463,7 @@ create table sys_dict_type
   primary key (dict_id),
   unique (dict_type)
 ) engine=innodb auto_increment=100 comment = '字典类型表';
-
+#                                   字典名称      字典类型              状态
 insert into sys_dict_type values(1,  '用户性别', 'sys_user_sex',        '0', 'admin', sysdate(), '', null, '用户性别列表');
 insert into sys_dict_type values(2,  '菜单状态', 'sys_show_hide',       '0', 'admin', sysdate(), '', null, '菜单状态列表');
 insert into sys_dict_type values(3,  '系统开关', 'sys_normal_disable',  '0', 'admin', sysdate(), '', null, '系统开关列表');
@@ -492,7 +498,7 @@ create table sys_dict_data
   remark           varchar(500)    default null               comment '备注',
   primary key (dict_code)
 ) engine=innodb auto_increment=100 comment = '字典数据表';
-
+#                             编码  排序  标签    字典键值            字典类型          样式属性 表格回显样式 是否默认 状态
 insert into sys_dict_data values(1,  1,  '男',       '0',       'sys_user_sex',        '',   '',        'Y', '0', 'admin', sysdate(), '', null, '性别男');
 insert into sys_dict_data values(2,  2,  '女',       '1',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别女');
 insert into sys_dict_data values(3,  3,  '未知',     '2',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别未知');
@@ -541,7 +547,7 @@ create table sys_config (
   remark            varchar(500)    default null               comment '备注',
   primary key (config_id)
 ) engine=innodb auto_increment=100 comment = '参数配置表';
-
+#                                       参数名称                    参数键名                          参数键值        系统内置
 insert into sys_config values(1,  '主框架页-默认皮肤样式名称',     'sys.index.skinName',               'skin-blue',     'Y', 'admin', sysdate(), '', null, '蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow');
 insert into sys_config values(2,  '用户管理-账号初始密码',         'sys.user.initPassword',            '123456',        'Y', 'admin', sysdate(), '', null, '初始化密码 123456');
 insert into sys_config values(3,  '主框架页-侧边栏主题',           'sys.index.sideTheme',              'theme-dark',    'Y', 'admin', sysdate(), '', null, '深黑主题theme-dark，浅色主题theme-light，深蓝主题theme-blue');
@@ -612,7 +618,7 @@ create table sys_job (
   remark              varchar(500)  default ''                 comment '备注信息',
   primary key (job_id, job_name, job_group)
 ) engine=innodb auto_increment=100 comment = '定时任务调度表';
-
+#                              任务名称         任务组名        调用目标字符串            cron执行表达式 计划执行策略 并发执行 状态
 insert into sys_job values(1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams',        '0/10 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
 insert into sys_job values(2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')',  '0/15 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
 insert into sys_job values(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
@@ -656,6 +662,7 @@ create table sys_notice (
 -- ----------------------------
 -- 初始化-公告信息表数据
 -- ----------------------------
+#                                           公告标题                 公告类型   公告内容   公告状态
 insert into sys_notice values('1', '温馨提醒：2018-07-01 若依新版本发布啦', '2', '新版本内容', '0', 'admin', sysdate(), '', null, '管理员');
 insert into sys_notice values('2', '维护通知：2018-07-01 若依系统凌晨维护', '1', '维护内容',   '0', 'admin', sysdate(), '', null, '管理员');
 
