@@ -69,6 +69,7 @@ public class SysPostController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
+        // ids可能是由逗号组成的一串id的组合
         try
         {
             return toAjax(postService.deletePostByIds(ids));
@@ -92,6 +93,7 @@ public class SysPostController extends BaseController
      * 新增保存岗位
      */
     @RequiresPermissions("system:post:add")
+    // 自定义了注解和处理注解的切面类，将注解注在控制器上，可以在调用控制器时，根据有无异常，自动进行日志登记
     @Log(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody

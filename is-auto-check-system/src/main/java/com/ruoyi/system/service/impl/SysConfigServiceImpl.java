@@ -57,16 +57,24 @@ public class SysConfigServiceImpl implements ISysConfigService
     @Override
     public String selectConfigByKey(String configKey)
     {
+        // getCacheName() 定义在一个常量类，是用于 参数管理 cache name
+        // getCacheKey(configKey) 定义在一个常量类，结合configKey得到一个配置key
+        // CacheUtils.get(getCacheName(), getCacheKey(configKey))从参数管理的缓存池取出配置对象
+        // Convert.toStr 将对象转为 字符串
         String configValue = Convert.toStr(CacheUtils.get(getCacheName(), getCacheKey(configKey)));
         if (StringUtils.isNotEmpty(configValue))
         {
+            // 如果缓存池有这个配置key的对象，返回，如果没有，新建一个配置类对象
             return configValue;
         }
+
         SysConfig config = new SysConfig();
         config.setConfigKey(configKey);
         SysConfig retConfig = configMapper.selectConfig(config);
+
         if (StringUtils.isNotNull(retConfig))
         {
+            // 将键名和键值存入缓存池，然后返回键值
             CacheUtils.put(getCacheName(), getCacheKey(configKey), retConfig.getConfigValue());
             return retConfig.getConfigValue();
         }

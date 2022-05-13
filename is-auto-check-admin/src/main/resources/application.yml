@@ -76,8 +76,10 @@ spring:
 # MyBatis
 mybatis:
     # 搜索指定包别名
+    # 当你设置这个 ，那么在Mybatis的Mapper文件里面就可以直接写对应的类名 而不用写全路径名了
     typeAliasesPackage: com.ruoyi.**.domain
     # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    # 也可以通过在接口方法上注解@Mapper，通知容器
     mapperLocations: classpath*:mapper/**/*Mapper.xml
     # 加载全局的配置文件
     configLocation: classpath:mybatis/mybatis-config.xml

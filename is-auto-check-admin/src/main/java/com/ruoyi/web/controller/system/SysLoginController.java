@@ -46,8 +46,12 @@ public class SysLoginController extends BaseController
             return ServletUtils.renderString(response, "{\"code\":\"1\",\"msg\":\"未登录或登录超时。请重新登录\"}");
         }
         // 是否开启记住我
+        // 如果rememberMe为true，登陆页面就显示一个记住我的多选框
         mmap.put("isRemembered", rememberMe);
+      //  logger.info("rememberMe"+rememberMe);
         // 是否开启用户注册
+        // Convert.toBool(configService.getKey("sys.account.registerUser") 将字符串转为布尔值
+        // 如果没有字符串，默认值就是false
         mmap.put("isAllowRegister", Convert.toBool(configService.getKey("sys.account.registerUser"), false));
         return "login";
     }

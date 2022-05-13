@@ -32,12 +32,14 @@ public class ThreadPoolConfig
     @Bean(name = "threadPoolTaskExecutor")
     public ThreadPoolTaskExecutor threadPoolTaskExecutor()
     {
+        // 这个类则是spring包下的，是sring为我们提供的线程池类
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setMaxPoolSize(maxPoolSize);
         executor.setCorePoolSize(corePoolSize);
         executor.setQueueCapacity(queueCapacity);
         executor.setKeepAliveSeconds(keepAliveSeconds);
         // 线程池对拒绝任务(无线程可用)的处理策略
+        // CallerRunsPolicy：用于被拒绝任务的处理程序，它直接在execute方法的调用线程中运行被拒绝的任务。
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         return executor;
     }
@@ -48,6 +50,8 @@ public class ThreadPoolConfig
     @Bean(name = "scheduledExecutorService")
     protected ScheduledExecutorService scheduledExecutorService()
     {
+        // ThreadPoolExecutor ：用于创建线程池，控制立即执行的线程
+        // ScheduledExecutorService : 创建延迟和循环线程池
         return new ScheduledThreadPoolExecutor(corePoolSize,
                 new BasicThreadFactory.Builder().namingPattern("schedule-pool-%d").daemon(true).build(),
                 new ThreadPoolExecutor.CallerRunsPolicy())

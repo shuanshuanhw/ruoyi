@@ -18,7 +18,9 @@ public class CacheUtils
 {
     private static Logger logger = LoggerFactory.getLogger(CacheUtils.class);
 
+    // 在配置类已经创建了缓存池，在这里取出来，可能是shiro配置的
     private static CacheManager cacheManager = SpringUtils.getBean(CacheManager.class);
+  //  private static EhCacheManager cacheManager = SpringUtils.getBean(EhCacheManager.class);
 
     private static final String SYS_CACHE = "sys-cache";
 
@@ -77,6 +79,8 @@ public class CacheUtils
      */
     public static Object get(String cacheName, String key)
     {
+        // getKey(key) 就是直接返回key参数，多此一举
+
         return getCache(cacheName).get(getKey(key));
     }
 

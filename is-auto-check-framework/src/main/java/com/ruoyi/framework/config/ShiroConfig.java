@@ -137,9 +137,12 @@ public class ShiroConfig
     public EhCacheManager getEhCacheManager()
     {
         net.sf.ehcache.CacheManager cacheManager = net.sf.ehcache.CacheManager.getCacheManager("ruoyi");
+
         EhCacheManager em = new EhCacheManager();
+
         if (StringUtils.isNull(cacheManager))
         {
+            // 如果cacheManager对象为空
             em.setCacheManager(new net.sf.ehcache.CacheManager(getCacheManagerConfigFileInputStream()));
             return em;
         }

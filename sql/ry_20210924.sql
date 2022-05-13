@@ -100,10 +100,15 @@ create table sys_post
 -- 初始化-岗位信息表数据
 -- ----------------------------
 #                               岗位编码  岗位名称 显示顺序 状态 创建者 创建时间    更新者 更新时间 备注
-insert into sys_post values(1, 'ceo',  '董事长',    1, '0', 'admin', sysdate(), '', null, '');
-insert into sys_post values(2, 'se',   '项目经理',  2, '0', 'admin', sysdate(), '', null, '');
-insert into sys_post values(3, 'hr',   '人力资源',  3, '0', 'admin', sysdate(), '', null, '');
-insert into sys_post values(4, 'user', '普通员工',  4, '0', 'admin', sysdate(), '', null, '');
+insert into sys_post values(1, 'chief_curator',  '正馆长',    1, '0', 'admin', sysdate(), '', null, '');
+insert into sys_post values(2, 'deputy_curator',   '副馆长',  2, '0', 'admin', sysdate(), '', null, '');
+insert into sys_post values(3, 'chief_officer',   '正主任',  3, '0', 'admin', sysdate(), '', null, '');
+insert into sys_post values(4, 'deputy_officer', '副主任',  4, '0', 'admin', sysdate(), '', null, '');
+
+insert into sys_post values(5, 'senior_technical_post',  '高级技术岗',    5, '0', 'admin', sysdate(), '', null, '');
+insert into sys_post values(6, 'mid_level_technical_post',   '中级技术岗',  6, '0', 'admin', sysdate(), '', null, '');
+insert into sys_post values(7, 'primary_technical_post',   '初级技术岗',  7, '0', 'admin', sysdate(), '', null, '');
+
 
 
 -- ----------------------------

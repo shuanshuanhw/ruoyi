@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.enums.BusinessType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -41,7 +43,8 @@ public class LogAspect
     public static final String[] EXCLUDE_PROPERTIES = { "password", "oldPassword", "newPassword", "confirmPassword" };
 
     // 配置织入点
-    @Pointcut("@annotation(com.ruoyi.common.annotation.Log)")
+    // 当执行的方法上拥有指定的注解时生效
+//    @Pointcut("@annotation(com.ruoyi.common.annotation.Log)")
     public void logPointCut()
     {
     }
@@ -51,9 +54,12 @@ public class LogAspect
      *
      * @param joinPoint 切点
      */
+    // pointcut = "@annotation(controllerLog)",不需要上面定义的切入点，决定controllerLog类型的，是下面方法的第二个参数类型
+    // joinPoint存储注解下面方法的一些信息，controllerLog存储注解的参数，jsonResult存储返回值
     @AfterReturning(pointcut = "@annotation(controllerLog)", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, Log controllerLog, Object jsonResult)
     {
+        log.info("进入了处理后增加器");
         handleLog(joinPoint, controllerLog, null, jsonResult);
     }
 
@@ -73,6 +79,7 @@ public class LogAspect
     {
         try
         {
+
             // 获取当前的用户
             SysUser currentUser = ShiroUtils.getSysUser();
 
@@ -82,10 +89,17 @@ public class LogAspect
             // 请求的地址
             String ip = ShiroUtils.getIp();
             operLog.setOperIp(ip);
+
+            // 通过 RequestAttributes attributes = RequestContextHolder.getRequestAttributes();获取请求属性
             operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
+
+            // 如果是有登陆的情况，就加上操作员
             if (currentUser != null)
             {
                 operLog.setOperName(currentUser.getLoginName());
+
+                // SysUser这个类并没有和数据库的用户表一一对应，它加入了部门对象
+                // 以下逻辑判断SysUser对象的部门对象不为空，以及部门对象的部门名对象不为空，就在操作日记上加入部门名
                 if (StringUtils.isNotNull(currentUser.getDept())
                         && StringUtils.isNotEmpty(currentUser.getDept().getDeptName()))
                 {
@@ -93,9 +107,12 @@ public class LogAspect
                 }
             }
 
+            // 以下逻辑是在发生异常的情况下
             if (e != null)
             {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
+
+                // 自己封闭了一个截取子字符串的方法，可以避免位数不对报错
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
             // 设置方法名称
@@ -104,9 +121,13 @@ public class LogAspect
             operLog.setMethod(className + "." + methodName + "()");
             // 设置请求方式
             operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
+
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
+
             // 保存数据库
+            // 通过取得唯一一个ScheduledExecutorService延迟线程池，取得一个线程，加入一个TimerTask，运行。
+            // 是一种异步运行的原理，能提高性能吧。
             AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
         }
         catch (Exception exp)

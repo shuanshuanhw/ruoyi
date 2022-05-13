@@ -10,6 +10,7 @@ $(function() {
 
 $.validator.setDefaults({
     submitHandler: function() {
+    alert('提交')
         login();
     }
 });

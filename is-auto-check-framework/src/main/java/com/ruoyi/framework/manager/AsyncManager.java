@@ -21,10 +21,11 @@ public class AsyncManager
     /**
      * 异步操作任务调度线程池
      */
+    // 在ThreadPoolConfig上bean了一个ScheduledExecutorService线程池，在这里取出来
     private ScheduledExecutorService executor = SpringUtils.getBean("scheduledExecutorService");
 
     /**
-     * 单例模式
+     * 单例模式，我觉得如果不是单例模式，取的也是同一个ScheduledExecutorService
      */
     private AsyncManager(){}
 
