@@ -1,0 +1,32 @@
+1、表单
+<form id="signupForm" autocomplete="off">
+<button class="btn btn-success btn-block" id="btnSubmit" data-loading="正在验证登录，请稍候...">登录</button>
+</form>
+2、点登录后，先进入
+
+$("#signupForm").validate({
+        rules: {
+            username: {
+                required: true
+            },
+            password: {
+                required: true
+            }
+        },
+        messages: {
+            username: {
+                required: icon + "请输入您的用户名",
+            },
+            password: {
+                required: icon + "请输入您的密码",
+            }
+        }
+    })
+如果上面的字段判断没问题的话，就会进入登录逻辑
+$.validator.setDefaults({
+    submitHandler: function() {
+// 通过这个入口进入登录逻辑
+        login();
+    }
+});
+

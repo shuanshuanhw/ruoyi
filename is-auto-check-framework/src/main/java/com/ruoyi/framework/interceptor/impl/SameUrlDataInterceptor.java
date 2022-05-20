@@ -30,6 +30,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
     {
         // 本次参数及系统时间
         String nowParams = JSON.marshal(request.getParameterMap());
+
         Map<String, Object> nowDataMap = new HashMap<String, Object>();
         nowDataMap.put(REPEAT_PARAMS, nowParams);
         nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());

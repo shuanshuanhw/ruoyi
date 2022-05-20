@@ -1,7 +1,8 @@
 
 $(function() {
     validateKickout();
-    validateRule();
+
+//    validateRule();
     $('.imgcode').click(function() {
         var url = ctx + "captcha/captchaImage?type=" + captchaType + "&s=" + Math.random();
         $(".imgcode").attr("src", url);
@@ -10,12 +11,13 @@ $(function() {
 
 $.validator.setDefaults({
     submitHandler: function() {
-    alert('提交')
+alert('提交')
         login();
     }
 });
 
 function login() {
+
     $.modal.loading($("#btnSubmit").data("loading"));
     var username = $.common.trim($("input[name='username']").val());
     var password = $.common.trim($("input[name='password']").val());
@@ -44,6 +46,7 @@ function login() {
 }
 
 function validateRule() {
+//
     var icon = "<i class='fa fa-times-circle'></i> ";
     $("#signupForm").validate({
         rules: {
