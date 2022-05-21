@@ -21,6 +21,9 @@ import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.system.service.ISysUserService;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 /**
  * 登录校验方法
  * 
@@ -103,8 +106,14 @@ public class SysLoginService
 
         passwordService.validate(user, password);
 
+        // 通过线程池运行TimerTask的方式，做一下登陆的日志记录
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+
+        // 在用户数据表上，记录最后的登陆时间和IP
         recordLoginInfo(user.getUserId());
+
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(4);
+
         return user;
     }
 

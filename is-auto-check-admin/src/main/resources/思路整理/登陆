@@ -30,3 +30,8 @@ $.validator.setDefaults({
     }
 });
 
+3、进入login方法，会进入一个ajax验证，这个验证在进入控制器之前，会先在realm的登陆模块验证，对验证码、用户名规范、密码规范、判空、密码是否正确等的验证就在这里。
+
+4、前台用jquery.validate.min.js对字段进行效验，后台也有同样的效验，但使用的是自己写的逻辑，规范写在配置文件上去取，并没有使用validation插件，但在返回提示语中使用了国际化MessageSource的方式提供。
+
+5、定义了专门的登陆日志类SysLogininfor，

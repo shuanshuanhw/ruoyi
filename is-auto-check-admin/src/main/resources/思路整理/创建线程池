@@ -1,0 +1,38 @@
+1、通过配置文件，new一个ScheduledExecutorService线程池管理类，通过Bean交给spring管理
+定义一个ThreadPoolConfig类，通过配置文件定义ThreadPoolTaskExecutor需要的参数
+// 这个类则是spring包下的，是sring为我们提供的线程池类
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setMaxPoolSize(maxPoolSize);
+        executor.setCorePoolSize(corePoolSize);
+        executor.setQueueCapacity(queueCapacity);
+        executor.setKeepAliveSeconds(keepAliveSeconds);
+        // 线程池对拒绝任务(无线程可用)的处理策略
+        // CallerRunsPolicy：用于被拒绝任务的处理程序，它直接在execute方法的调用线程中运行被拒绝的任务。
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+2、新建一个AsyncManager类，用来管理异步线程，异步应该是相对于用户调用控制器的流程而言。
+在AsyncManager取spring容器的ScheduledExecutorService对象，然后以单例模式通过me()方法返回AsyncManager对象，再通过execute(TimerTask task)方法，内部通过线程池对象运行TimerTask对象。
+private ScheduledExecutorService executor = SpringUtils.getBean("scheduledExecutorService");
+
+3、通过以下方式在任何地方以线程池的方式运行定义的TimerTask对象。
+AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+
+4、Spring默认线程池simpleAsyncTaskExecutor，默认情况下通过@Async注解用的就是这个线程池，但官方更建议使用ThreadPoolTaskExecutor，需要配置后交给容器，注解调用时需要指明，比如@Async("myAsync")。
+ScheduledExecutorService有另外的功能，能够实现延时，但目前不知有什么用。
+
+5、java有定时器类Timer，后来spring提供了注解@Scheduled也是类似功能，可以直接用。但这两者应该都是单线程的,所以建议用ScheduledThreadPoolExecutor，同样可以定时和循环，但是多线程的。
+Corn在线生成器网站： https://cron.qqe2.com/
+
+Quartz 是一个完全由 Java 编写的开源作业调度框架，它可以集成在几乎任何Java应用程序中进行作业调度。
+
+
+6、 线程池工厂类：Executors,这个可以取得很多类型的线程类，目前不知以这种方式取得的话，配置在哪里写。
+// 创建一个固定数量的线程池
+ExecutorService ExecutorService1 = Executors.newFixedThreadPool(10);
+// 返回一个可根据实际情况调整线程个数的线程池
+ExecutorService ExecutorService2 = Executors.newCachedThreadPool();
+// 创建一个线程数量为1的线程池
+ExecutorService ExecutorService3 = Executors.newSingleThreadExecutor();
+// 返回一个ScheduledExecutorService对象,该对象也是调用父类的线程池方法，类似newFixedThreadPool
+ScheduledExecutorService ScheduledExecutorService = Executors.newScheduledThreadPool(5);
+
+
