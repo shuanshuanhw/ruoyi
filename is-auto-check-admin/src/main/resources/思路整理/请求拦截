@@ -1,0 +1,37 @@
+1、RepeatSubmitInterceptor
+SpringBoot中拦截器的接口名称是HandlerInterceptor。
+这个拦截器实现了preHandle方法，用于在控制器执行前执行，其功能在于对添加了防重复提交注解的控制器，进行防重复提交的判断
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
+    {
+        if (handler instanceof HandlerMethod)// 先判断是不是处理器方法
+        {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            Method method = handlerMethod.getMethod();
+            // 判断这个方法上面是否有RepeatSubmit注解，而这个注解是防止重复提交的
+            RepeatSubmit annotation = method.getAnnotation(RepeatSubmit.class);
+            if (annotation != null)
+            {
+                // 有防止重复提交注解
+                if (this.isRepeatSubmit(request, annotation))
+                {
+                    AjaxResult ajaxResult = AjaxResult.error(annotation.message());
+                    ServletUtils.renderString(response, JSON.marshal(ajaxResult));
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+2、LogAspect，切面类，对每个控制器执行后进行日志记录，或者对发生异常进行日志记录。
+
+3、DataSourceAspect，切面类，处理多数据源的情况
+
+4、DataScopeAspect，切面类，数据过滤处理
+
+5、GlobalExceptionHandler，全局异常处理类

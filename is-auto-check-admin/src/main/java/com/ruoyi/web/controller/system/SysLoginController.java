@@ -56,10 +56,18 @@ public class SysLoginController extends BaseController
         return "login";
     }
 
+    @GetMapping("/loginTest")
+    public String loginTest()
+    {
+        return "/test/login";
+    }
+
+
     @PostMapping("/login")
     @ResponseBody
     public AjaxResult ajaxLogin(String username, String password, Boolean rememberMe)
     {
+        logger.info("进入登录");
         UsernamePasswordToken token = new UsernamePasswordToken(username, password, rememberMe);
         Subject subject = SecurityUtils.getSubject();
         try

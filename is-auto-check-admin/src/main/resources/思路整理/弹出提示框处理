@@ -1,0 +1,40 @@
+1、在ry-ui.js文件中，有一块代码，使用layer对各种弹出层功能进行封闭。
+2、top.layer.open表示这个弹窗打开显示在顶层，parent.layer.open表示这个弹窗打开显示在父窗口
+3、若依封闭了比较基础的弹窗方法，底层基于layer.msg，然后通过这个基础方法衍生出msgError、msgSuccess、msgWarning方法
+
+            msg: function(content, type) {
+                if (type != undefined) {
+                	top.layer.msg(content, { icon: $.modal.icon(type), time: 1000, shift: 5 });
+                } else {
+                	top.layer.msg(content);
+                }
+            }
+4、layer icon对应图标
+1- 信息框(msg、alert、open、confirm)
+icon:0 警告、icon:1 正确、icon:2 错误、icon:3 疑问、icon:4 上锁、icon:5 不高兴、icon:6 高兴、icon:16 正在加载
+2- 加载层(load)
+icon:0 水平橙球循环、icon:1和icon:2 正在加载
+
+5、封装了alert警告弹窗基础方法，基于layer.alert，再衍生出alertError、alertSuccess、alertWarning
+6、封装了reload方法，通过指令parent.location.reload();
+7、封装了loading和closeLoading方法，用于打开遮罩层和关闭遮罩层
+$.blockUI({ message: '<div class="loaderbox"><div class="loading-activity"></div> ' + message + '</div>' });
+closeLoading: function () {
+                setTimeout(function(){
+                    $.unblockUI();
+                }, 50);
+            }
+blockUI和unblockUI函数调用install和remove函数，后两者代码一堆，没看明白。
+
+8、封装了msgReload方法，本质是先显示一个500毫秒的msg，再调用reload方法。
+9、封装了确认窗体confirm，本质调用layer.confirm，在回调函数中调用封装的close方法，里面本质还是调用layer的close方法，但做了逻辑判断
+             confirm: function (content, callBack) {
+                top.layer.confirm(content, {
+                    icon: 3,
+                    title: "系统提示",
+                    btn: ['确认', '取消']
+                }, function (index) {
+                    $.modal.close(index);
+                    callBack(true);
+                });
+            }
